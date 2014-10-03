@@ -138,7 +138,7 @@ float: left;
       <div class="flight" align="center">
                 <h3>Flight Management</h3>
             <div class="flight-buttons" >
-    {% for app in app_list %}
+<!--     {% for app in app_list %}
      {%  if app.app_label == 'flight'%}
 
         {% for model in app.models %}
@@ -146,7 +146,18 @@ float: left;
                <div class="dashboard-button">
                 <a href="{{ model.admin_url }}{% if model.name == 'Initiate A Flight' %}add/{% endif %}"><button class="btn1 btn-lg1 btn-primary"><i class="icon-wrench left-icon"></i>{{ model.name }}</button></a>
                 </div>
-            {% endif %}
+            {% endif %} {% for app in app_list %}
+
+          {%  if app.app_label == 'clubs'%}
+                {% for model in app.models %}
+                        <div class="dashboard-button">
+                    <a href="{{ model.admin_url }}"><button class="btn1 btn-lg1 btn-info"><i class="icon-wrench left-icon"></i>{{ model.name }}</button></a>
+                    </div>
+
+               {% endfor %}
+
+        {% endif %}
+    {% endfor %}
         {% endfor %}
 
 
@@ -167,8 +178,25 @@ float: left;
                {% endfor %}
 
         {% endif %}
-    {% endfor %}
-
+    {% endfor %} -->
+        <div class="dashboard-button">
+        <a href="/admin/flight/gfsaflightrecordsheet/"><button class="btn1 btn-lg1 btn-primary"><i class="icon-folder-open left-icon"></i>Flight Record Sheet</button></a>
+        </div>
+        <div class="dashboard-button">
+        <a href="/admin/flight/gfsaflightrecords/add/"><button class="btn1 btn-lg1 btn-primary"><i class="icon-folder-open left-icon"></i>Initial A Flight</button></a>
+        </div>
+        <div class="dashboard-button">
+        <a href="/admin/flight/gfsatakeoff/"><button class="btn1 btn-lg1 btn-primary"><i class="icon-folder-open left-icon"></i>Take Off</button></a>
+        </div>
+        <div class="dashboard-button">
+        <a href="/admin/flight/gfsatuglanding/"><button class="btn1 btn-lg1 btn-primary"><i class="icon-folder-open left-icon"></i>Tug Landing</button></a>
+        </div>
+        <div class="dashboard-button">
+        <a href="/admin/flight/gfsagliderlanding/"><button class="btn1 btn-lg1 btn-primary"><i class="icon-folder-open left-icon"></i>Glider Landing</button></a>
+        </div>
+         <div class="dashboard-button">
+        <a href="/admin/flarm/gfsaflarmrecords/"><button class="btn1 btn-lg1 btn-primary"><i class="icon-folder-open left-icon"></i>Flarm Records</button></a>
+        </div>
          <div class="dashboard-button">
         <a href="/admin/flight/gfsaflightrecordsheet/add/"><button class="btn1 btn-lg1 btn-primary"><i class="icon-folder-open left-icon"></i>Manual Add</button></a>
         </div>

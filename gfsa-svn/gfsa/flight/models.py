@@ -15,7 +15,7 @@ class GfsaFlightRecords(models.Model):
                                       help_text='Select Glider')  # Field name made lowercase.
 
     fr_p1_id = models.ForeignKey(GFSAXeroContactPerson, blank=False, null=False, db_column='fr_p1_id', on_delete=models.PROTECT,
-                                 verbose_name='Pilot 1 (Required)', related_name='fr_p1_id',help_text='Please type pilot\'s first name and select')
+                                 verbose_name='Pilot 1 (in command)(required)', related_name='fr_p1_id',help_text='Please type pilot\'s first name and select')
     fr_p2_id = models.ForeignKey(GFSAXeroContactPerson, blank=True, null=True, db_column='fr_p2_id', on_delete=models.PROTECT,
                                  verbose_name='Pilot 2', related_name='fr_p2_id',help_text='Please type pilot\'s first name and select')
 
@@ -32,7 +32,7 @@ class GfsaFlightRecords(models.Model):
     fr_last_updated = models.DateTimeField(auto_now=True, null=False, verbose_name='Last Updated')
     fr_in_xero = models.BooleanField(blank=False, null=False, default=False, editable = False, verbose_name='In Xero')
     fr_sent = models.BooleanField(blank=False, null=False, default=False, editable = False, verbose_name='Sent Notification')
-    fr_comment = models.CharField(default='Baccus Marsh | ',max_length=500, blank=True, null=True, verbose_name='Comments',
+    fr_comment = models.CharField(default='YBSS -',max_length=500, blank=True, null=True, verbose_name='Comments',
                     help_text='Please type your comments.')
 
     def __unicode__(self):

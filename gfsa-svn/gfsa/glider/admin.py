@@ -3,10 +3,10 @@ from glider.models import *
 from flight.models import *
 import datetime
 class GfsaGlidersAdmin(admin.ModelAdmin):
-    fields = ['glider_identifier','glider_owner','glider_club','glider_member','glider_seat_type','glider_initial_flights','glider_initial_flying_hour','glider_other_text_description','glider_flarm_id','glider_active']
-    search_fields = ['glider_identifier','glider_owner','glider_flarm_id','glider_other_text_description']
-    list_display = ['glider_identifier','glider_owner','glider_club','glider_member','glider_seat_type','glider_initial_flights','total_flights','glider_initial_flying_hour','total_flights_hours','glider_flarm_id','glider_status','glider_active']
-    list_filter = ['glider_owner','glider_status','glider_active']
+    fields = ['glider_identifier','glider_club','glider_member','glider_seat_type','glider_initial_flights','glider_initial_flying_hour','glider_other_text_description','glider_flarm_id','glider_active']
+    search_fields = ['glider_identifier','glider_flarm_id','glider_other_text_description']
+    list_display = ['glider_identifier','glider_club','glider_member','glider_seat_type','glider_initial_flights','total_flights','glider_initial_flying_hour','total_flights_hours','glider_flarm_id','glider_status','glider_active']
+    list_filter = ['glider_status','glider_active']
     actions = ['enable_gliders','disable_gliders']
     def total_flights(self,obj):
         glider = GfsaGliders.objects.get(pk=obj.glider_id)
