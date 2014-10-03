@@ -38,8 +38,8 @@ def get_xml_file(t,launch_type,offset):
     filename="record-"+str(t[0])+"-"+str(t[1])+"-"+str(t[2])+launch_type+".xml"
 
     #connect to the flarm server
-    conn = httplib.HTTPConnection("www.flarmradar.ch")
-    conn.request("GET", "/rest/flarmdata/"+launch_type+'/'+NODE_NAME+'/'+date+\
+    conn = httplib.HTTPConnection(FLARM_DOMAIN)
+    conn.request("GET", "/rest/flarmdata/"+launch_type+'/'+FLARM_NODE_NAME+'/'+date+\
                  "?offset="+str(offset))
     r1 = conn.getresponse()
     return r1.read()
