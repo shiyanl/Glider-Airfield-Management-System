@@ -168,10 +168,45 @@ STATUSES = (
 )
 TEST_FLARM = False
 
+# Settings for automation, you can replace the frequency with below ones.
+# Just remember that any changes on crontab, you must run the command 
+# "python manage.py crontab remove" first and then "python manage.py crontab add" 
+PER_HOUR = '* */1 * * *'
+PER_MINUTE = '*/1 * * * *'
+PER_DAY = '* * */1 * *'
+FIX_TIME = '* 17 * * *' # 17:00 everyday
+
+XERO_FREQ_UPDATE_CONTACTS = FIX_TIME
+XERO_FREQ_UPDATE_ITEMCODES = FIX_TIME
+XERO_FREQ_COMPARE_MEMBER = FIX_TIME
+XERO_FREQ_SEND_NOTIFICATION = FIX_TIME
+
+
 CRONJOBS = [
-    # everyday at 17:00, execute
-    ('* 17 * * *', 'xero.cron.update_contacts'),
-    ('* 17 * * *', 'xero.cron.update_itemcodes'),
-    ('* 17 * * *', 'xero.cron.send_notification'),
-    ('* 17 * * *', 'xero.cron.compare_memeber'),
+    # A field may be an asterisk (*), which always stands for "first-last".
+
+    # Ranges of numbers are allowed.  Ranges are two numbers separated with a
+    # hyphen.  The specified range is inclusive.  For example,  8-11  for  an
+    # "hours" entry specifies execution at hours 8, 9, 10 and 11.
+
+    # Lists are allowed.  A list is a set of numbers (or ranges) separated by
+    # commas.  Examples: "1,2,5,9", "0-4,8-12".
+
+    # Step values can be used in conjunction with ranges.  Following a  range
+    # with  "<number>"  specifies  skips  of  the  number's value through the
+    # range.  For example, "0-23/2" can be used in the hours field to specify
+    # command  execution every other hour (the alternative in the V7 standard
+    # is "0,2,4,6,8,10,12,14,16,18,20,22").  Steps are also  permitted  after
+    # an asterisk, so if you want to say "every two hours", just use "*/2".
+
+    # For example,
+    # "30 4 1,15 * 5" would cause a command to be run at 4:30 am on  the  1st
+    # and 15th of each month, plus every Friday.
+    # everyday at 17:00, execute xero 
+    (XERO_FREQ_UPDATE_CONTACTS, 'xero.cron.update_contacts'),
+    (XERO_FREQ_UPDATE_ITEMCODES, 'xero.cron.update_itemcodes'),
+    (XERO_FREQ_SEND_NOTIFICATION, 'xero.cron.send_notification'),
+    (XERO_FREQ_COMPARE_MEMBER, 'xero.cron.compare_memeber'),
+    ('*/10 * * * *', 'flarm.cron.update_flarm'),
+    ('*/10 * * * *', 'flarm.cron.update_flarm_all'),
 ]
