@@ -94,8 +94,8 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',  # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': 'gfsa',  # Or path to database file if using sqlite3.
         'USER': 'root',  # Not used with sqlite3.
-        'PASSWORD': 'gfsa_db_123',  # Not used with sqlite3.
-        'HOST': '115.146.87.20',
+        'PASSWORD': 'gfsa123456',  # Not used with sqlite3.
+        'HOST': '',
         # '192.168.1.5',                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '3306',  #'3306',                      # Set to empty string for default. Not used with sqlite3.
     }
@@ -176,11 +176,12 @@ PER_MINUTE = '*/1 * * * *'
 PER_DAY = '* * */1 * *'
 FIX_TIME = '* 17 * * *' # 17:00 everyday
 
-XERO_FREQ_UPDATE_CONTACTS = FIX_TIME
-XERO_FREQ_UPDATE_ITEMCODES = FIX_TIME
-XERO_FREQ_COMPARE_MEMBER = FIX_TIME
-XERO_FREQ_SEND_NOTIFICATION = FIX_TIME
-
+XERO_FREQ_UPDATE_CONTACTS = PER_MINUTE
+XERO_FREQ_UPDATE_ITEMCODES = PER_MINUTE
+XERO_FREQ_COMPARE_MEMBER = PER_MINUTE
+XERO_FREQ_SEND_NOTIFICATION = PER_MINUTE
+FLARM_FREQ_UPDATE_TODAY = PER_MINUTE
+FLARM_FREQ_UPDATE_FROM_LAST_TIMESTAMP = '*/10 * * * *'
 
 CRONJOBS = [
     # A field may be an asterisk (*), which always stands for "first-last".
@@ -207,6 +208,6 @@ CRONJOBS = [
     (XERO_FREQ_UPDATE_ITEMCODES, 'xero.cron.update_itemcodes'),
     (XERO_FREQ_SEND_NOTIFICATION, 'xero.cron.send_notification'),
     (XERO_FREQ_COMPARE_MEMBER, 'xero.cron.compare_memeber'),
-    ('*/10 * * * *', 'flarm.cron.update_flarm'),
-    ('*/10 * * * *', 'flarm.cron.update_flarm_all'),
+    (FLARM_FREQ_UPDATE_TODAY, 'flarm.cron.update_flarm'),
+    (FLARM_FREQ_UPDATE_FROM_LAST_TIMESTAMP, 'flarm.cron.update_flarm_all'),
 ]
