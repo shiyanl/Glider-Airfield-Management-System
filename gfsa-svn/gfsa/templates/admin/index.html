@@ -1,0 +1,305 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_static %}
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}" />
+<style type="text/css">
+@media (min-width: 240px) and (max-width: 480px) {
+.btn-lg1, .btn-group-lg1 > .btn1 {
+padding: 10px 16px;
+line-height: 1.33;
+width: 110px;
+height: 85px;
+border-radius: 6px;
+background-color: #428bca;
+color: #fff;
+box-shadow: 0px 0px 20px rgb(0, 70, 97);
+}
+
+.dashboard-button{
+    float: left;
+    padding: 8px;
+}
+.flight-sheet-button{
+
+    text-align: center;
+    width: 100%;
+
+width: 45%;
+}
+.flight-buttons{
+height: 150px;
+margin-left: auto;
+margin-right: auto;
+
+}
+.flight, .flight-admin, .xero-admin, .site-admin{
+clear: both;
+width: 100%;
+margin-left: auto;
+margin-right: auto;
+height: auto;
+
+
+}
+}
+@media (min-width: 481px) and (max-width: 800px) {
+.btn-lg1, .btn-group-lg1 > .btn1 {
+padding: 10px 16px;
+line-height: 1.33;
+width: 120px;
+height: 85px;
+border-radius: 6px;
+background-color: #428bca;
+color: #fff;
+box-shadow: 0px 0px 20px rgb(0, 70, 97);
+}
+
+.dashboard-button{
+    float: left;
+    padding: 8px;
+}
+.flight-sheet-button{
+    clear: both;
+    text-align: center;
+    width: 100%;
+
+width: 48%;
+}
+.flight-buttons{
+height: 150px;
+margin-left: auto;
+margin-right: auto;
+
+}
+.flight, .flight-admin, .xero-admin, .site-admin{
+clear: both;
+width: 100%;
+margin-left: auto;
+margin-right: auto;
+height: auto;
+
+
+}
+}
+@media (min-width: 801px) {
+
+ .btn-lg1, .btn-group-lg1 > .btn1 {
+padding: 10px 16px;
+line-height: 1.33;
+width: 120px;
+height: 85px;
+border-radius: 6px;
+background-color: #428bca;
+color: #fff;
+box-shadow: 0px 0px 20px rgb(0, 70, 97);
+}
+
+.dashboard-button{
+    float: left;
+    padding: 8px;
+}
+.flight-sheet-button{
+    clear: both;
+    text-align: center;
+    width: 100%;
+
+width: 48%;
+}
+.flight-buttons{
+height: 150px;
+margin-left: auto;
+margin-right: auto;
+
+}
+.flight, .flight-admin, .xero-admin, .site-admin{
+
+width: 25%;
+height: auto;
+float: left;
+
+}
+}
+   
+
+
+</style>
+
+
+{% endblock %}
+
+
+
+{% block coltype %}MS{% endblock %}
+
+{% block content %}
+<div id="content-main" class="col-sm-12">
+
+{% if app_list %}
+    {{ app.app_label }}
+      <div class="flight" align="center">
+                <h3>Flight Management</h3>
+            <div class="flight-buttons" >
+    {% for app in app_list %}
+     {%  if app.app_label == 'flight'%}
+
+        {% for model in app.models %}
+            {%if model.name != 'Glider Flight Flarm' and model.name != 'Tug Flight Flarm' and model.name != 'Date Stamp'%}
+               <div class="dashboard-button">
+                <a href="{{ model.admin_url }}{% if model.name == 'Initiate A Flight' %}add/{% endif %}"><button class="btn1 btn-lg1 btn-primary"><i class="icon-wrench left-icon"></i>{{ model.name }}</button></a>
+                </div>
+            {% endif %}
+        {% endfor %}
+
+
+        {% endif %}
+
+
+
+    {% endfor %}
+    {% for app in app_list %}
+
+          {%  if app.app_label == 'flarm'%}
+                {% for model in app.models %}
+                {%if model.name != 'Date Stamp'%}
+                        <div class="dashboard-button">
+                    <a href="{{ model.admin_url }}"><button class="btn1 btn-lg1 btn-primary"><i class="icon-folder-open left-icon"></i>{{ model.name }}</button></a>
+                    </div>
+{% endif %}
+               {% endfor %}
+
+        {% endif %}
+    {% endfor %}
+
+         <div class="dashboard-button">
+        <a href="/admin/flight/gfsaflightrecordsheet/add/"><button class="btn1 btn-lg1 btn-primary"><i class="icon-folder-open left-icon"></i>Manual Add</button></a>
+        </div>
+
+    </div>
+{% else %}
+    <p>{% trans "You don't have permission to edit anything." %}</p>
+{% endif %}
+    </div>
+    {% if app_list %}
+
+    <div class="flight-admin" align="center">
+    <h3>Administration</h3>
+        <div class="flight-buttons">
+
+    {% for app in app_list %}
+     {%  if app.app_label == 'glider'%}
+
+        {% for model in app.models %}
+            {%if model.name != 'Tug Landing' and model.name != 'Glider Landing' %}
+               <div class="dashboard-button">
+                <a href="{{ model.admin_url }}"><button class="btn1 btn-lg1 btn-info"><i class="icon-wrench left-icon"></i>{{ model.name }}</button></a>
+                </div>
+            {% endif %}
+        {% endfor %}
+        {% endif %}
+    {% endfor %}
+    {% for app in app_list %}
+
+          {%  if app.app_label == 'tug'%}
+                {% for model in app.models %}
+                        <div class="dashboard-button">
+                    <a href="{{ model.admin_url }}"><button class="btn1 btn-lg1 btn-info"><i class="icon-wrench left-icon"></i>{{ model.name }}</button></a>
+                    </div>
+
+               {% endfor %}
+
+        {% endif %}
+    {% endfor %}
+
+    {% for app in app_list %}
+
+          {%  if app.app_label == 'clubs'%}
+                {% for model in app.models %}
+                        <div class="dashboard-button">
+                    <a href="{{ model.admin_url }}"><button class="btn1 btn-lg1 btn-info"><i class="icon-wrench left-icon"></i>{{ model.name }}</button></a>
+                    </div>
+
+               {% endfor %}
+
+        {% endif %}
+    {% endfor %}
+            {% for app in app_list %}
+
+          {%  if app.app_label == 'xero'%}
+                {% for model in app.models %}
+                    {% if model.name != 'Records' %}
+                        <div class="dashboard-button">
+                    <a href="{{ model.admin_url }}"><button class="btn1 btn-lg1 btn-info"><i class="icon-wrench left-icon"></i>{{ model.name }}</button></a>
+                    </div>
+                    {% endif %}
+
+               {% endfor %}
+
+        {% endif %}
+    {% endfor %}
+                                        <div class="dashboard-button">
+        <a href="/flarm_api/"><button class="btn1 btn-lg1 btn-info"><i class="icon-folder-open left-icon"></i>Update FLARM</button></a>
+        </div>
+    </div>
+{% else %}
+    <p>{% trans "You don't have permission to edit anything." %}</p>
+{% endif %}
+</div>
+ <div class="xero-admin" align="center">
+    <h3>XERO Administration</h3>
+        <div class="flight-buttons">
+
+        <div class="dashboard-button">
+        <a href="/update_contacts/"><button class="btn1 btn-lg1 btn-info"><i class="icon-wrench left-icon"></i>Update Contacts</button></a>
+        </div>
+        <div class="dashboard-button">
+        <a href="/update_itemcode/"><button class="btn1 btn-lg1 btn-info"><i class="icon-random left-icon"></i>Update Item Codes</button></a>
+        </div>
+         <div class="dashboard-button">
+        <a href="/compare_members/"><button class="btn1 btn-lg1 btn-info"><i class="icon-wrench left-icon"></i>Compare Member</button></a>
+        </div>
+
+    </div>
+
+</div>
+
+    {% if app_list %}
+
+    <div class="flight-admin" align="center">
+    <h3>Administration</h3>
+        <div class="flight-buttons">
+
+    {% for app in app_list %}
+     {%  if app.app_label == 'admin'%}
+
+        {% for model in app.models %}
+            {%if model.name != 'Tug Landing' and model.name != 'Glider Landing' %}
+               <div class="dashboard-button">
+                <a href="{{ model.admin_url }}"><button class="btn1 btn-lg1 btn-warning"><i class="icon-wrench left-icon"></i>{{ model.name }}</button></a>
+                </div>
+            {% endif %}
+        {% endfor %}
+        {% endif %}
+    {% endfor %}
+    {% for app in app_list %}
+
+          {%  if app.app_label == 'auth'%}
+                {% for model in app.models %}
+                        <div class="dashboard-button">
+                    <a href="{{ model.admin_url }}"><button class="btn1 btn-lg1 btn-warning"><i class="icon-wrench left-icon"></i>{{ model.name }}</button></a>
+                    </div>
+
+               {% endfor %}
+
+        {% endif %}
+    {% endfor %}
+
+
+{% else %}
+    <p>{% trans "You don't have permission to edit anything." %}</p>
+{% endif %}
+{% endblock %}
+
+{% block sidebar %}
+
+
+
+{% endblock %}

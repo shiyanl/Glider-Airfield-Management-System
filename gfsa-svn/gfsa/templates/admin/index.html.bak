@@ -1,0 +1,47 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_static %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}" />
+<style type="text/css">
+    .btn-lg, .btn-group-lg > .btn {
+padding: 10px 16px;
+font-size: 18px;
+line-height: 1.33;
+width: 35%;
+border-radius: 6px;
+}
+</style>
+{% endblock %}
+
+
+
+{% block coltype %}{% endblock %}
+
+{% block content %}
+{% block content_title %}{% endblock %}
+
+<div id="content-main-main" >
+
+    <center>
+        <a href="/admin/flight/gfsaflightrecords/add/"><button class="btn btn-lg btn-primary"><i class="icon-wrench left-icon"></i>Initiate A Flight</button></a>
+    <br/>&nbsp;<br/>
+        <a href="/admin/flight/gfsatakeoff/"><button class="btn btn-lg btn-success"><i class="icon-random left-icon"></i>Take OFF</button></a>
+    <br/>&nbsp;<br/>
+        <a href="/admin/flight/gfsagliderlanding/"><button class="btn btn-lg btn-warning"><i class="icon-folder-open left-icon"></i>Glider Landing</button></a>
+    <br/>&nbsp;<br/>
+        <a href="/admin/flight/gfsatuglanding/"><button class="btn btn-lg btn-warning"><i class="icon-hdd left-icon"></i>Tug Landing</button></a>
+    <br/>&nbsp;<br/>
+        <a href="/admin/flight/gfsaflightrecordsheet/"><button class="btn btn-lg btn-success"><i class="icon-folder-open left-icon"></i>Flight Sheet</button></a>
+    <br/>&nbsp;<br/>
+        <a href="/administration/"><button class="btn btn-lg btn-info"><i class="icon-folder-open left-icon"></i>Back TO Admin Panel</button></a>
+
+    </center>
+
+</div>
+{% endblock %}
+
+{% block sidebar %}
+
+
+
+{% endblock %}

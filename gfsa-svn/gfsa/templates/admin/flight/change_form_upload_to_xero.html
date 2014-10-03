@@ -1,0 +1,27 @@
+{% extends "admin/change_form.html" %}
+
+
+{% block object-tools %}
+<div class="submit-row">
+
+    <p class="deletelink-box"><input type="submit" value="UploadToXero(Save as draft)" class="default" name="upload", onclick= "window.location.href='/upload_to_xero/'+transfer()">
+
+    </p>
+    <p id = "pageId" style="visibility:hidden"> {{request.get_full_path}}</p>
+
+</div>
+
+<script type="text/javascript">
+    function transfer(){
+        var tag = document.getElementById("pageId");
+        var url = tag.innerHTML;
+        var str = url.split('/')
+        var inv_id = str[str.length-2]
+        //alert(inv_id)
+        return inv_id
+    }  
+    
+</script>
+
+{% endblock %}
+

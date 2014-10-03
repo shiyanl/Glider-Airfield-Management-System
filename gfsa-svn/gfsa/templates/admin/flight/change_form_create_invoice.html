@@ -1,0 +1,27 @@
+{% extends "admin/change_form.html" %}
+
+
+{% block object-tools %}
+<div class="submit-row">
+
+    <p class="deletelink-box"><input type="submit" value="CreateInvoice" class="default" name="createInvoice" onclick= "window.location.href='/admin/flight/gfsainvoice/add'">
+
+    </p>
+    <p id = "pageId" style="visibility:hidden"> {{request.get_full_path}}</p>
+    
+
+
+</div>
+<script type="text/javascript">
+    function transfer(){
+        var tag = document.getElementById("pageId");
+        var url = tag.innerHTML;
+        var str = url.split('/')
+        var fr_id = str[str.length-2]
+        //alert(fr_id)
+        return fr_id
+    }  
+    
+</script>
+{% endblock %}
+

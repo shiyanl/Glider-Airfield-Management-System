@@ -1,0 +1,272 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_static %}
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}" />
+<style type="text/css">
+@media (min-width: 240px) and (max-width: 480px) {
+.btn-lg1, .btn-group-lg1 > .btn1 {
+padding: 10px 16px;
+line-height: 1.33;
+width: 110px;
+height: 85px;
+border-radius: 6px;
+background-color: #428bca;
+color: #fff;
+box-shadow: 0px 0px 20px rgb(0, 70, 97);
+}
+
+.dashboard-button{
+    float: left;
+    padding: 8px;
+}
+.flight-sheet-button{
+
+    text-align: center;
+    width: 100%;
+
+width: 45%;
+}
+.flight-buttons{
+height: 150px;
+margin-left: auto;
+margin-right: auto;
+
+}
+.flight, .flight-admin, .xero-admin, .site-admin{
+clear: both;
+width: 100%;
+margin-left: auto;
+margin-right: auto;
+height: auto;
+
+
+}
+}
+@media (min-width: 481px) and (max-width: 800px) {
+.btn-lg1, .btn-group-lg1 > .btn1 {
+padding: 10px 16px;
+line-height: 1.33;
+width: 120px;
+height: 85px;
+border-radius: 6px;
+background-color: #428bca;
+color: #fff;
+box-shadow: 0px 0px 20px rgb(0, 70, 97);
+}
+
+.dashboard-button{
+    float: left;
+    padding: 8px;
+}
+.flight-sheet-button{
+    clear: both;
+    text-align: center;
+    width: 100%;
+
+width: 48%;
+}
+.flight-buttons{
+height: 150px;
+margin-left: auto;
+margin-right: auto;
+
+}
+.flight, .flight-admin, .xero-admin, .site-admin{
+clear: both;
+width: 100%;
+margin-left: auto;
+margin-right: auto;
+height: auto;
+
+
+}
+}
+@media (min-width: 801px) {
+
+ .btn-lg1, .btn-group-lg1 > .btn1 {
+padding: 10px 16px;
+line-height: 1.33;
+width: 120px;
+height: 85px;
+border-radius: 6px;
+background-color: #428bca;
+color: #fff;
+box-shadow: 0px 0px 20px rgb(0, 70, 97);
+}
+
+.dashboard-button{
+    float: left;
+    padding: 8px;
+}
+.flight-sheet-button{
+    clear: both;
+    text-align: center;
+    width: 100%;
+
+width: 48%;
+}
+.flight-buttons{
+height: 150px;
+margin-left: auto;
+margin-right: auto;
+
+}
+.flight, .flight-admin, .xero-admin, .site-admin{
+
+width: 25%;
+height: auto;
+float: left;
+
+}
+}
+   
+
+<<<<<<< .mine
+
+=======
+.flarm-admin{
+    clear: both;
+    margin-left: auto;
+margin-right: auto;
+width: 70%;
+height: auto;
+border-bottom: 1px solid rgb(14, 25, 14); 
+padding-top: 10px;
+}
+
+
+>>>>>>> .r80
+</style>
+
+
+{% endblock %}
+
+
+
+{% block coltype %}MS{% endblock %}
+
+{% block content %}
+
+
+<div id="content-main" class="col-sm-12">
+<div class="flight" align="center">
+    <h3>Flight Management</h3>
+<div class="flight-buttons" >
+
+    <div class="dashboard-button">
+    <a href="/admin/flight/gfsaflightrecords/add/"><button class="btn1 btn-lg1 btn-primary"><i class="icon-wrench left-icon"></i>Initiate A Flight</button></a>
+    </div>
+    <div class="dashboard-button">
+    <a href="/admin/flight/gfsatakeoff/"><button class="btn1 btn-lg1 btn-primary"><i class="icon-random left-icon"></i>Take OFF</button></a>
+    </div>
+    <div class="dashboard-button">
+    <a href="/admin/flight/gfsagliderlanding/"><button class="btn1 btn-lg1 btn-primary"><i class="icon-folder-open left-icon"></i>Glider Landing</button></a>
+    </div>
+    <div class="dashboard-button">
+    <a href="/admin/flight/gfsatuglanding/"><button class="btn1 btn-lg1 btn-primary"><i class="icon-hdd left-icon"></i>Tug Landing</button></a>
+    </div>
+        <div class="dashboard-button">
+        <a href="/admin/flight/gfsaflightrecordsheet/"><button class="btn1 btn-lg1 btn-primary"><i class="icon-folder-open left-icon"></i>Flight Sheet</button></a>
+        </div>
+        <div class="dashboard-button">
+        <a href="/admin/flarm/gfsaflarmrecords"><button class="btn btn-lg btn-primary"><i class="icon-folder-open left-icon"></i>Flarm Records</button></a>
+        </div>
+    </div>
+    <div class="flight-sheet-button">
+    </div>
+    </div>
+    <div class="flight-admin" align="center">
+    <h3>Administration</h3>
+        <div class="flight-buttons">
+
+        <div class="dashboard-button">
+        <a href="/admin/glider/gfsagliders/"><button class="btn1 btn-lg1 btn-info"><i class="icon-wrench left-icon"></i>Gliders</button></a>
+        </div>
+        <div class="dashboard-button">
+        <a href="/admin/tug/gfsatugs/"><button class="btn1 btn-lg1 btn-info"><i class="icon-random left-icon"></i>Tugs</button></a>
+        </div>
+        <div class="dashboard-button">
+        <a href="/admin/member/gfsamember/"><button class="btn1 btn-lg1 btn-info"><i class="icon-folder-open left-icon"></i>Members</button></a>
+        </div>
+        
+    </div>
+
+</div>
+    <div class="xero-admin" align="center">
+    <h3>XERO Administration</h3>
+        <div class="flight-buttons">
+
+        <div class="dashboard-button">
+        <a href="/admin/xero/gfsaxerocontactperson/"><button class="btn1 btn-lg1 btn-info"><i class="icon-wrench left-icon"></i>Contacts</button></a>
+        </div>
+        <div class="dashboard-button">
+        <a href="/admin/xero/gfsaxeroitemcode/"><button class="btn1 btn-lg1 btn-info"><i class="icon-random left-icon"></i>Item Code</button></a>
+        </div>
+        <div class="dashboard-button">
+        <a href="/admin/flight/gfsainvoice/"><button class="btn1 btn-lg1 btn-info"><i class="icon-wrench left-icon"></i>Upload Invoice</button></a>
+        </div>
+         <div class="dashboard-button">
+        <a href="/compare_members/"><button class="btn btn-lg2 btn-info"><i class="icon-wrench left-icon"></i>Compare Member</button></a>
+        </div>
+        
+    </div>
+
+</div>
+
+    <div class="site-admin" align="center">
+    <h3>Site Administration</h3>
+        <div class="flight-buttons">
+
+        <div class="dashboard-button">
+        <a href="/admin/auth/user/"><button class="btn1 btn-lg1 btn-warning"><i class="icon-wrench left-icon"></i>Users</button></a>
+        </div>
+        <div class="dashboard-button">
+        <a href="/admin/auth/group/"><button class="btn1 btn-lg1 btn-warning"><i class="icon-random left-icon"></i>Groups</button></a>
+        </div>
+        <div class="dashboard-button">
+        <a href="/admin/admin/logentry/"><button class="btn1 btn-lg1 btn-warning"><i class="icon-folder-open left-icon"></i>Log Entries</button></a>
+        </div>
+    </div>
+</div>
+
+<!-- {% if app_list %}
+    <h2>Site Options</h2>
+    {% for app in app_list %}
+        <div class="module">
+        <table summary="{% blocktrans with name=app.name %}Models available in the {{ name }} application.{% endblocktrans %}">
+        <caption><a href="{{ app.app_url }}" class="section">{% blocktrans with name=app.name %}{{ name }}{% endblocktrans %}</a></caption>
+
+        {% for model in app.models %}
+            <tr>
+            {% if model.admin_url %}
+                <th scope="row"><a href="{{ model.admin_url }}">{{ model.name }}</a></th>
+            {% else %}
+                <th scope="row">{{ model.name }}</th>
+            {% endif %}
+
+            {% if model.add_url %}
+                <td><a href="{{ model.add_url }}" class="addlink">{% trans 'Add' %}</a></td>
+            {% else %}
+                <td>&nbsp;</td>
+            {% endif %}
+
+            {% if model.admin_url %}
+                <td><a href="{{ model.admin_url }}" class="changelink">{% trans 'Change' %}</a></td>
+            {% else %}
+                <td>&nbsp;</td>
+            {% endif %}
+            </tr>
+        {% endfor %}
+        </table>
+        </div>
+    {% endfor %}
+{% else %}
+    <p>{% trans "You don't have permission to edit anything." %}</p>
+{% endif %}
+</div> -->
+{% endblock %}
+
+{% block sidebar %}
+
+
+
+{% endblock %}
