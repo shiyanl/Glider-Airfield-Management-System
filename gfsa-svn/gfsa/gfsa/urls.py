@@ -18,5 +18,5 @@ urlpatterns = patterns('',
                        url(r'^update_itemcode/', 'xero.views.get_item_code'),
                        url(r'^compare_members/', 'xero.views.compare_contact'),
                        #url(r'^admin/lookups/', include(ajax_select_urls)),
-                       url(r'^sent_notification/', 'xero.views.sent_notification'),
+                       url(r'^send_notification/', 'xero.views.send_notification'),
 )

@@ -18,9 +18,9 @@ class GfsaFlightRecords(models.Model):
     #fr_p1_id = models.ForeignKey(GfsaMember, blank=False,null=False,db_column='fr_p1_id',verbose_name='Pilot 1 (Required)',related_name='fr_p1_id') 
     #fr_p2_id = models.ForeignKey(GfsaMember, blank=True,null=True,db_column='fr_p2_id',verbose_name='Pilot 2',related_name='fr_p2_id') 
 
-    fr_p1_id = models.ForeignKey(GFSAXeroContactPerson, blank=False, null=False, db_column='fr_p1_id',
+    fr_p1_id = models.ForeignKey(GFSAXeroContactPerson, blank=False, null=False, db_column='fr_p1_id', on_delete=models.PROTECT,
                                  verbose_name='Pilot 1 (Required)', related_name='fr_p1_id',help_text='Please type pilot\'s first name and select')
-    fr_p2_id = models.ForeignKey(GFSAXeroContactPerson, blank=True, null=True, db_column='fr_p2_id',
+    fr_p2_id = models.ForeignKey(GFSAXeroContactPerson, blank=True, null=True, db_column='fr_p2_id', on_delete=models.PROTECT,
                                  verbose_name='Pilot 2', related_name='fr_p2_id',help_text='Please type pilot\'s first name and select')
 
     #fr_p1_id = models.CharField(max_length=45, blank=True,null=True,verbose_name='Commanding Pilot')

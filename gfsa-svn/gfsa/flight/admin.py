@@ -141,7 +141,7 @@ class GfsaFlightRecordsTakeOffAdmin(admin.ModelAdmin):
 
     def queryset(self, request):
         qs = super(admin.ModelAdmin, self).queryset(request)
-        return qs.filter(fr_take_off__isnull=True).order_by("fr_created")
+        return qfr_tug_durations.filter(fr_take_off__isnull=True).order_by("fr_created")
 
     def has_add_permission(self, request):
         return False
@@ -267,7 +267,7 @@ class GfsaFlightRecordSheetAdmin(admin.ModelAdmin):
     change_list_template = 'admin/flight/change_list_flightsheet.html'
     search_fields = ['fr_p1_id__last_name','fr_p1_id__first_name','fr_p2_id__last_name','fr_p2_id__first_name','glider_glider__glider_identifier','tug_tug__tug_identifier','fr_comment']
     list_display = ['fr_id', 'created',  'fr_p1_id', 'fr_p2_id', 'fr_p1_pay_percent',
-                    'fr_p2_pay_percent', 'tug_tug', 'glider_glider','take_off', 'tug_land', 'tug_duration', 'fr_glider_land',
+                    'fr_p2_pay_percent', 'tug_tug', 'glider_glider','take_off', 'tug_land', 'tug_duration', 'glider_land',
                     'glider_duration', 'fr_comment']
     date_hierarchy = 'fr_created'
     list_filter = ['fr_created', 'tug_tug', 'glider_glider', 'fr_in_xero']
@@ -293,7 +293,7 @@ class GfsaFlightRecordSheetAdmin(admin.ModelAdmin):
             return obj.fr_tug_land.strftime('%d.%m.%y %H:%M')
         except:
             return '(None)'
-    tug_land.short_description = 'Take Off'
+    tug_land.short_description = 'Tug Landing Time'
     tug_land.admin_order_field = 'fr_tug_land'
 
     def glider_land(self,obj):
@@ -301,7 +301,7 @@ class GfsaFlightRecordSheetAdmin(admin.ModelAdmin):
             return obj.fr_glider_land.strftime('%d.%m.%y %H:%M')
         except:
             return '(None)'
-    glider_land.short_description = 'Take Off'
+    glider_land.short_description = 'Glider Landing Time'
     glider_land.admin_order_field = 'fr_glider_land'
 
     def save_model(self, request, obj, form, change):
@@ -313,12 +313,24 @@ class GfsaFlightRecordSheetAdmin(admin.ModelAdmin):
             glider_flarm.flarm_id = obj.glider_glider.glider_flarm_id
             glider_flarm.save()
         try:
-            glider_flarm = GfsaTugFlarmFlightRecords.objects.get(flight_record_id=obj)
+            tug_flarm = GfsaTugFlarmFlightRecords.objects.get(flight_record_id=obj)
         except:
             tug_flarm = GfsaTugFlarmFlightRecords()
             tug_flarm.flight_record_id = obj
             tug_flarm.flarm_id = obj.tug_tug.tug_flarm_id
             tug_flarm.save()
+
+        if obj.fr_glider_land == None or obj.fr_take_off == None or obj.fr_tug_land == None:
+            obj.fr_glider_duration = None  
+            obj.fr_tug_duration = None
+        
+        else:
+            total_glider_duration = (obj.fr_glider_land - obj.fr_take_off).seconds 
+            obj.fr_glider_duration = total_glider_duration if total_glider_duration > 0 else None
+
+            total_tug_duration = (obj.fr_tug_land - obj.fr_take_off).seconds
+            obj.fr_tug_duration = total_tug_duration if total_tug_duration > 0 else None
+
         obj.save()
 
     def tug_duration(self, obj):

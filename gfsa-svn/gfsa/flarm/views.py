@@ -252,10 +252,13 @@ def same_date(records,date):
   answer=[]
   for record in records:
     #print record.takeoff_time.date(),date
-    if record.takeoff_time==None:
+    try:
+      if record.takeoff_time==None:
+        continue
+      if(record.takeoff_time.date()==date):
+        answer+=[record]
+    except:
       continue
-    if(record.takeoff_time.date()==date):
-      answer+=[record]
   return answer
 
   

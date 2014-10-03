@@ -48,5 +48,6 @@ def email_anyone(to_email, message):
         return False
 
 def send_SMS(mobile, message):
-    email_address = mobile + '@' + SMS_SERVER
-    return email_anyone(email_address, message)
+    #email_address = mobile + '@' + SMS_SERVER
+    #return email_anyone(email_address, message)
+    return False

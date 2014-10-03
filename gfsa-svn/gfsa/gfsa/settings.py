@@ -52,6 +52,7 @@ INSTALLED_APPS = (
     'clubs',
     # 'member'
     #'ajax_select',
+    'django_crontab',
 )
 
 AJAX_LOOKUP_CHANNELS = {
@@ -167,5 +168,12 @@ STATUSES = (
     ('Ready', 'Ready')
 
 )
-TEST_FLARM = True
+TEST_FLARM = False
 
+CRONJOBS = [
+    # everyday at 17:00, execute
+    ('* 17 * * *', 'xero.cron.update_contacts'),
+    ('* 17 * * *', 'xero.cron.update_itemcodes'),
+    ('* 17 * * *', 'xero.cron.send_notification'),
+    ('* 17 * * *', 'xero.cron.compare_memeber'),
+]

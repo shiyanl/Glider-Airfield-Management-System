@@ -288,7 +288,7 @@ def get_mobile_no(phones):
     else:
         return ''
 
-def sent_notification(request):
+def send_notification(request):
 
     flight_records_set = GfsaFlightRecords.objects.filter(fr_sent = False, fr_tug_duration__isnull = False, fr_glider_duration__isnull = False)
 

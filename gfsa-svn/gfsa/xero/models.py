@@ -18,7 +18,7 @@ class GFSAXeroContactPerson(models.Model):
         return u'%s' % (self.first_name + " " + self.last_name)
 
     class Meta:
-        verbose_name_plural = 'Members'
+        verbose_name_plural = 'Contacts'
 
 
 class GFSAXeroItemCode(models.Model):
