@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.contrib.admin.sites import AdminSite
 from gfsa.settings import *
 from gfsa.models import AdminSite
-#from ajax_select import urls as ajax_select_urls
+from ajax_select import urls as ajax_select_urls
 
 admin.autodiscover()
 
@@ -17,6 +17,6 @@ urlpatterns = patterns('',
                        url(r'^update_contacts/', 'xero.views.get_contacts'),
                        url(r'^update_itemcode/', 'xero.views.get_item_code'),
                        url(r'^compare_members/', 'xero.views.compare_contact'),
-                       #url(r'^admin/lookups/', include(ajax_select_urls)),
+                       url(r'^admin/lookups/', include(ajax_select_urls)),
                        url(r'^send_notification/', 'xero.views.send_notification'),
 )

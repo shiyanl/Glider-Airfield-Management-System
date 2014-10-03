@@ -6,8 +6,8 @@ from gfsa.settings import *
 import datetime
 from xero.views import *
 from xero.email import *
-#from ajax_select import make_ajax_field
-#from ajax_select.admin import AjaxSelectAdmin
+from ajax_select import make_ajax_field
+from ajax_select.admin import AjaxSelectAdmin
 
 class GliderFlarmTimeAdmin(admin.ModelAdmin):
     list_display = ['flarm_id', 'flight_record_id', 'take_off', 'landing']
@@ -42,8 +42,8 @@ class TugFlarmTimeInline(admin.TabularInline):
 
 # Create the form class.
 class AddFlightRecordForm(forms.ModelForm):
-    #fr_p1_id = make_ajax_field(GfsaFlightRecords,'fr_p1_id','person')
-    #fr_p2_id = make_ajax_field(GfsaFlightRecords,'fr_p2_id','person')
+    fr_p1_id = make_ajax_field(GfsaFlightRecords,'fr_p1_id','person')
+    fr_p2_id = make_ajax_field(GfsaFlightRecords,'fr_p2_id','person')
     fr_p1_pay_percent = forms.ChoiceField(choices=PAY_PERCENT, required=False, initial='100')
     fr_p2_pay_percent = forms.ChoiceField(choices=PAY_PERCENT, required=False, initial='0')
 

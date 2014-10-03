@@ -2,9 +2,7 @@
 from django.db import models
 from glider.models import GfsaGliders
 from tug.models import GfsaTugs
-#from xero.models import GfsaXeroRecord
 from gfsa.settings import *
-from member.models import GfsaMember
 from xero.models import GFSAXeroContactPerson, GFSAXeroItemCode
 from datetime import datetime
 
@@ -15,16 +13,12 @@ class GfsaFlightRecords(models.Model):
     glider_glider = models.ForeignKey(GfsaGliders, blank=False, null=False, db_column='Glider_glider_id',
                                       verbose_name='Glider Rego', default=0,
                                       help_text='Select Glider')  # Field name made lowercase.
-    #fr_p1_id = models.ForeignKey(GfsaMember, blank=False,null=False,db_column='fr_p1_id',verbose_name='Pilot 1 (Required)',related_name='fr_p1_id') 
-    #fr_p2_id = models.ForeignKey(GfsaMember, blank=True,null=True,db_column='fr_p2_id',verbose_name='Pilot 2',related_name='fr_p2_id') 
 
     fr_p1_id = models.ForeignKey(GFSAXeroContactPerson, blank=False, null=False, db_column='fr_p1_id', on_delete=models.PROTECT,
                                  verbose_name='Pilot 1 (Required)', related_name='fr_p1_id',help_text='Please type pilot\'s first name and select')
     fr_p2_id = models.ForeignKey(GFSAXeroContactPerson, blank=True, null=True, db_column='fr_p2_id', on_delete=models.PROTECT,
                                  verbose_name='Pilot 2', related_name='fr_p2_id',help_text='Please type pilot\'s first name and select')
 
-    #fr_p1_id = models.CharField(max_length=45, blank=True,null=True,verbose_name='Commanding Pilot')
-    #fr_p2_id = models.CharField(max_length=45, blank=True,null=True,verbose_name='Learning Pilot')
     fr_p1_pay_percent = models.CharField(choices=PAY_PERCENT, max_length=45, blank=True, null=True,
                                          verbose_name='Pilot 1 Payment %',help_text='Enter Appropriate %')
     fr_p2_pay_percent = models.CharField(choices=PAY_PERCENT, max_length=45, blank=True, null=True,
@@ -34,13 +28,9 @@ class GfsaFlightRecords(models.Model):
     fr_glider_land = models.DateTimeField(blank=True, null=True, verbose_name='Glider Landing TIme')
     fr_tug_duration = models.CharField(max_length=500, blank=True, null=True, verbose_name='Tug Flight Duration')
     fr_glider_duration = models.CharField(max_length=500, blank=True, null=True, verbose_name='Glider Flight Duration')
-    #fr_special = models.CharField(max_length=45, blank=True, null=True, verbose_name='Comments',help_text='Enter Special Comments')
     fr_created = models.DateTimeField(auto_now_add=True, null=False, verbose_name='Created Time')
     fr_last_updated = models.DateTimeField(auto_now=True, null=False, verbose_name='Last Updated')
-    #fr_in_xero = models.CharField(max_length=45, blank=False, null=False, default = 'No',verbose_name='In Xero')
     fr_in_xero = models.BooleanField(blank=False, null=False, default=False, editable = False, verbose_name='In Xero')
-    #itemcode = models.CharField(max_length=45, blank=True,null=True,verbose_name='Itemcode')
-    #xerorecord_xr = models.ForeignKey(GfsaXeroRecord, db_column='XeroRecord_xr_id') # Field name made lowercase.
     fr_sent = models.BooleanField(blank=False, null=False, default=False, editable = False, verbose_name='Sent Notification')
     fr_comment = models.CharField(default='Baccus Marsh | ',max_length=500, blank=True, null=True, verbose_name='Comments',
                     help_text='Please type your comments.')

@@ -47,11 +47,9 @@ INSTALLED_APPS = (
     'tug',
     'glider',
     'xero',
-    # 'south',
     'flarm',
     'clubs',
-    # 'member'
-    #'ajax_select',
+    'ajax_select',
     'django_crontab',
 )
 
