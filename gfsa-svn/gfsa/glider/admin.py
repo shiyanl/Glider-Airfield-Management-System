@@ -40,5 +40,5 @@ class GfsaGlidersAdmin(admin.ModelAdmin):
     enable_gliders.short_description = "Enable selected gliders"
 
 admin.site.register(GfsaGliders,GfsaGlidersAdmin)
-if TEST_FLARM == False:
-    admin.site.disable_action('delete_selected')
+#if TEST_FLARM == False:
+    #admin.site.disable_action('delete_selected')

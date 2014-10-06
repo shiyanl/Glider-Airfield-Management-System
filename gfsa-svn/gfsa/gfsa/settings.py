@@ -146,9 +146,10 @@ STATIC_URL = '/static/'
 TEMPLATE_DIRS = (
     DIR + '/templates/',
 )
-FLARM_DOMAIN='www.flarmradar.ch'
+#Flarm configure
+FLARM_DOMAIN = "www.flarmradar.ch"
 FLARM_NODE_NAME = 'YBSS'
-
+#
 SEAT_TYPE = (
     ('1', '1'),
     ('2', '2')

@@ -134,8 +134,12 @@ def save_flarm_(time):
       seconds=time_plane[17:19]
       t=(int(year),int(month),int(day),int(hour),int(minuts),int(seconds))
       time_plane = datetime.datetime(*t[:6])
-      hour_8 = datetime.timedelta(hours=8)
-      time_plane+=hour_8
+      if time.localtime().tm_isdst==1:
+        hour_delta=9
+      else:
+        hour_delta=8
+      hour_ = datetime.timedelta(hours=hour_delta)
+      time_plane+=hour_
       #for take off time and handle the exception of time/record lost
       if(launch_type=="takeoff"):
         count_tf+=1
