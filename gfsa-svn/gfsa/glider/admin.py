@@ -12,18 +12,16 @@ class AddGliderForm(forms.ModelForm):
 
     class Meta:
         model = GfsaGliders
-        fields = ['glider_identifier','glider_club','glider_member','glider_seat_type','glider_initial_flights','glider_initial_flying_hour','glider_other_text_description','glider_flarm_id','glider_active']
-
+        fields = ['glider_identifier','glider_club','glider_member','glider_seat_type','glider_initial_flights','glider_initial_flying_hour','glider_other_text_description','glider_flarm_id']
 
 
 
 class GfsaGlidersAdmin(admin.ModelAdmin):
     form = AddGliderForm
-    #fields = ['glider_identifier','glider_club','glider_member','glider_seat_type','glider_initial_flights','glider_initial_flying_hour','glider_other_text_description','glider_flarm_id','glider_active']
     search_fields = ['glider_identifier','glider_flarm_id', 'glider_member__first_name','glider_member__last_name', 'glider_club__club_name']
-    list_display = ['glider_identifier','glider_club','glider_member','glider_seat_type','glider_initial_flights','total_flights','glider_initial_flying_hour','total_flights_hours','glider_flarm_id','glider_status']
-    list_filter = ['glider_status','glider_active']
-    actions = ['enable_gliders','disable_gliders']
+    list_display = ['glider_identifier','glider_club','glider_member','glider_seat_type','total_flights','total_flights_hours','glider_flarm_id','glider_status']
+    list_filter = ['glider_status', 'glider_club']
+    actions = []
     def total_flights(self,obj):
         glider = GfsaGliders.objects.get(pk=obj.glider_id)
         total_flights = GfsaFlightRecords.objects.filter(glider_glider=obj)
@@ -36,7 +34,7 @@ class GfsaGlidersAdmin(admin.ModelAdmin):
 
     def total_flights_hours(self,obj):
         glider = GfsaGliders.objects.get(pk=obj.glider_id)
-        total_flights_hours = glider.glider_initial_flying_hour * 60
+        total_flights_hours = glider.glider_initial_flying_hour * 60 * 60
         all_flights = GfsaFlightRecords.objects.filter(glider_glider=obj,fr_glider_land__isnull=False)
         for duration in all_flights:
 
