@@ -133,11 +133,25 @@ float: left;
 {% block content %}
 <div id="content-main" class="col-sm-12">
 
+{% if request.user.username == 'viewer' %}
+        <div class="flight" align="center">
+            <h3>Flight Mansadfsdfagement </h3>
+            <div class="flight-buttons" >
+                <div class="dashboard-button">
+                    <a href="/admin/flight/gfsaflightrecords2/"><button class="btn1 btn-lg1 btn-primary"><i class="icon-folder-open left-icon"></i>Flight Record Sheet</button></a>
+                </div>
+            </div>
+        </div>
+{% else %}
+
+
+
 {% if app_list %}
     {{ app.app_label }}
-      <div class="flight" align="center">
-                <h3>Flight Management</h3>
+    <div class="flight" align="center">
+                <h3>Flight Management </h3>
             <div class="flight-buttons" >
+
 <!--     {% for app in app_list %}
      {%  if app.app_label == 'flight'%}
 
@@ -324,6 +338,9 @@ float: left;
 {% else %}
     <p>{% trans "You don't have permission to edit anything." %}</p>
 {% endif %}
+
+{% endif %}
+
 {% endblock %}
 
 {% block sidebar %}

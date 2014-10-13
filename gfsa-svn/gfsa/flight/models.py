@@ -42,6 +42,15 @@ class GfsaFlightRecords(models.Model):
         verbose_name_plural = 'Initiate A Flight'
 
 
+
+class GfsaFlightRecords2(GfsaFlightRecords):
+    class Meta:
+        proxy = True
+        verbose_name_plural = 'Flight Sheet Viewer'
+        app_label = 'flight'
+
+
+
 class GfsaTugLanding(GfsaFlightRecords):
     class Meta:
         proxy = True

@@ -4,6 +4,11 @@ from django.contrib.admin.sites import AdminSite
 from gfsa.settings import *
 from gfsa.models import AdminSite
 from ajax_select import urls as ajax_select_urls
+#import django_databrowse
+#from flight.models import GfsaFlightRecords
+
+
+#django_databrowse.site.register(GfsaFlightRecords)
 
 admin.autodiscover()
 
@@ -19,4 +24,7 @@ urlpatterns = patterns('',
                        url(r'^compare_members/', 'xero.views.compare_contact'),
                        url(r'^admin/lookups/', include(ajax_select_urls)),
                        url(r'^send_notification/', 'xero.views.send_notification'),
+                       #url(r'^django_databrowse/(.*)', django_databrowse.site.root),
 )
+
+

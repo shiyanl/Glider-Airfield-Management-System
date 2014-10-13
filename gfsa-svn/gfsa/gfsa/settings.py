@@ -51,6 +51,7 @@ INSTALLED_APPS = (
     'clubs',
     'ajax_select',
     'django_crontab',
+    #'django_databrowse',
 )
 
 AJAX_LOOKUP_CHANNELS = {

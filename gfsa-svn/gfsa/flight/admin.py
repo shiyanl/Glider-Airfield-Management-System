@@ -745,6 +745,114 @@ class GfsaFlightRecordSheetAdmin(admin.ModelAdmin):
     upload_to_xero.short_description = "Upload_to_Xero"
 
 
+
+class GfsaFlightRecordSheetAdmin2(admin.ModelAdmin):
+    #form = ManualAddFlightRecordForm
+    #change_list_template = 'admin/flight/change_list_flightsheet.html'
+    fields = []
+    search_fields = ['fr_p1_id__last_name','fr_p1_id__first_name','fr_p2_id__last_name','fr_p2_id__first_name','glider_glider__glider_identifier','tug_tug__tug_identifier','fr_comment']
+    list_display = ['fr_id', 'created',  'fr_p1_id', 'fr_p2_id', 'fr_p1_pay_percent',
+                    'fr_p2_pay_percent', 'tug_tug', 'glider_glider','take_off', 'tug_land', 'tug_duration', 'glider_land',
+                    'glider_duration', 'fr_comment']
+    date_hierarchy = 'fr_created'
+    list_filter = ['fr_created']
+    exclude = ['fr_tug_duration', 'fr_glider_duration']
+    #inlines = [GliderFlarmTimeInline, TugFlarmTimeInline]
+    can_delete = False
+    def take_off(self,obj):
+        try:
+            return obj.fr_take_off.strftime('%H%M')
+        except:
+            return '(None)'
+    take_off.short_description = 'Take Off'
+    take_off.admin_order_field = 'fr_take_off'
+    def created(self,obj):
+        try:
+            return obj.fr_created.strftime('%H%M')
+        except:
+            return '(None)'
+    created.short_description = 'Created'
+    created.admin_order_field = 'fr_created'
+    def tug_land(self,obj):
+        try:
+            return obj.fr_tug_land.strftime('%H%M')
+        except:
+            return '(None)'
+    tug_land.short_description = 'Tug Landing Time'
+    tug_land.admin_order_field = 'fr_tug_land'
+
+    def glider_land(self,obj):
+        try:
+            return obj.fr_glider_land.strftime('%H%M')
+        except:
+            return '(None)'
+    glider_land.short_description = 'Glider Landing Time'
+    glider_land.admin_order_field = 'fr_glider_land'
+
+    def save_model(self, request, obj, form, change):
+        if obj:
+            obj.save()
+        else:
+            try:
+                glider_flarm = GfsaGliderFlarmFlightRecords.objects.get(flight_record_id=obj)
+            except:
+                glider_flarm = GfsaGliderFlarmFlightRecords()
+                glider_flarm.flight_record_id = obj
+                glider_flarm.flarm_id = obj.glider_glider.glider_flarm_id
+                glider_flarm.save()
+            try:
+                tug_flarm = GfsaTugFlarmFlightRecords.objects.get(flight_record_id=obj)
+            except:
+                tug_flarm = GfsaTugFlarmFlightRecords()
+                tug_flarm.flight_record_id = obj
+                tug_flarm.flarm_id = obj.tug_tug.tug_flarm_id
+                tug_flarm.save()
+
+            if obj.fr_glider_land == None or obj.fr_take_off == None or obj.fr_tug_land == None:
+                obj.fr_glider_duration = None  
+                obj.fr_tug_duration = None
+            
+            else:
+                total_glider_duration = (obj.fr_glider_land - obj.fr_take_off).seconds 
+                obj.fr_glider_duration = total_glider_duration if total_glider_duration > 0 else None
+
+                total_tug_duration = (obj.fr_tug_land - obj.fr_take_off).seconds
+                obj.fr_tug_duration = total_tug_duration if total_tug_duration > 0 else None
+
+            obj.save()
+
+    def tug_duration(self, obj):
+        try:
+            total =(obj.fr_tug_land-obj.fr_take_off).seconds
+            duration =  u'%s'  %  str(datetime.timedelta(seconds=total))
+        except:
+            duration = 'N/A'
+        return duration
+
+    tug_duration.short_description = 'Tug duration'
+
+    def glider_duration(self, obj):
+        try:
+            total =(obj.fr_glider_land-obj.fr_take_off).seconds
+            duration =  u'%s'  %  str(datetime.timedelta(seconds=total))
+        except:
+            duration = 'N/A'
+        return duration
+
+    glider_duration.short_description = 'Gilder duration'
+
+    def glider(self, obj):
+        glider = GfsaGliders.objects.get(glider_id=obj.glider_glider.glider_id)
+        return u'%s' % glider.glider_identifier
+
+    def tug(self, obj):
+        tug = GfsaTugs.objects.get(tug_id=obj.tug_tug.tug_id)
+        return u'%s' % tug.tug_identifier
+
+    actions = ['send_flight_notification', 'upload_to_xero']
+
+
+
 admin.site.register(GfsaFlightRecords, GfsaFlightRecordsAdmin)
 admin.site.register(GfsaTakeOff, GfsaFlightRecordsTakeOffAdmin)
 admin.site.register(GfsaTugLanding, GfsaFlightRecordsTugLandingAdmin)
@@ -753,3 +861,4 @@ admin.site.register(GfsaFlightRecordSheet, GfsaFlightRecordSheetAdmin)
 admin.site.register(GfsaGliderFlarmFlightRecords, GliderFlarmTimeAdmin)
 admin.site.register(GfsaTugFlarmFlightRecords, TugFlarmTimeAdmin)
 
+admin.site.register(GfsaFlightRecords2, GfsaFlightRecordSheetAdmin2)
