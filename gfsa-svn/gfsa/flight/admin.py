@@ -131,10 +131,18 @@ class GfsaFlightRecordsTakeOffAdmin(admin.ModelAdmin):
     fields = ('tug_tug',)
     search_fields = ['fr_p1_id__last_name','fr_p1_id__first_name','fr_p2_id__last_name','fr_p2_id__first_name','glider_glider__glider_identifier']
     list_filter = []
-    list_display = ['glider', 'fr_p1_id', 'fr_p2_id', 'fr_created']
+    list_display = ['glider', 'fr_p1_id', 'fr_p2_id', 'fr_created', 'my_url_field']
     date_hierarchy = 'fr_created'
     change_form_template = 'admin/flight/change_form_take_off.html'
     can_delete = False
+
+
+
+    def my_url_field(self, obj):
+        
+        return '<a href="%s%s">%s</a>' % ('/admin/flight/gfsatakeoff/', obj.fr_id,'Take Off')
+    my_url_field.allow_tags = True
+    my_url_field.short_description = 'Click To Take Off'
 
     def glider(self, obj):
         glider = GfsaGliders.objects.get(glider_id=obj.glider_glider.glider_id)
@@ -191,10 +199,17 @@ class GfsaFlightRecordsTugLandingAdmin(admin.ModelAdmin):
     search_fields = ['tug_tug__tug_identifier']
     list_filter = []
     readonly_fields = ['tug_tug', 'fr_take_off', ]
-    list_display = ['tug', 'fr_take_off']
+    list_display = ['tug', 'fr_take_off', 'my_url_field']
     date_hierarchy = 'fr_created'
     change_form_template = 'admin/flight/change_form_landing.html'
     can_delete = False
+
+
+    def my_url_field(self, obj):
+        
+        return '<a href="%s%s">%s</a>' % ('/admin/flight/gfsatuglanding/', obj.fr_id,'Land')
+    my_url_field.allow_tags = True
+    my_url_field.short_description = 'Click To Land'
 
     def tug(self, obj):
         tug = GfsaTugs.objects.get(tug_id=obj.tug_tug.tug_id)
@@ -230,10 +245,18 @@ class GfsaFlightRecordsGliderLandingAdmin(admin.ModelAdmin):
     search_fields = ['fr_p1_id__last_name','fr_p1_id__first_name','fr_p2_id__last_name','fr_p2_id__first_name','glider_glider__glider_identifier']
     list_filter = []
     readonly_fields = ['glider_glider', 'fr_p1_id', 'fr_p2_id', 'fr_take_off', ]
-    list_display = ['glider', 'fr_p1_id', 'fr_p2_id', 'fr_take_off']
+    list_display = ['glider', 'fr_p1_id', 'fr_p2_id', 'fr_take_off', 'my_url_field']
     date_hierarchy = 'fr_created'
     change_form_template = 'admin/flight/change_form_landing.html'
     can_delete = False
+
+
+
+    def my_url_field(self, obj):
+        
+        return '<a href="%s%s">%s</a>' % ('/admin/flight/gfsagliderlanding/', obj.fr_id,'Land')
+    my_url_field.allow_tags = True
+    my_url_field.short_description = 'Click To Land'
 
 
     def glider(self, obj):
@@ -288,27 +311,27 @@ class GfsaFlightRecordSheetAdmin(admin.ModelAdmin):
                     'fr_p2_pay_percent', 'tug_tug', 'glider_glider','take_off', 'tug_land', 'tug_duration', 'glider_land',
                     'glider_duration', 'fr_comment']
     date_hierarchy = 'fr_created'
-    list_filter = ['fr_created', 'tug_tug', 'glider_glider', 'fr_in_xero']
+    list_filter = ['fr_created']
     exclude = ['fr_tug_duration', 'fr_glider_duration']
     inlines = [GliderFlarmTimeInline, TugFlarmTimeInline]
     can_delete = False
     def take_off(self,obj):
         try:
-            return obj.fr_take_off.strftime('%d%m%Y %H%M')
+            return obj.fr_take_off.strftime('%H%M')
         except:
             return '(None)'
     take_off.short_description = 'Take Off'
     take_off.admin_order_field = 'fr_take_off'
     def created(self,obj):
         try:
-            return obj.fr_created.strftime('%d%m%Y %H%M')
+            return obj.fr_created.strftime('%H%M')
         except:
             return '(None)'
     created.short_description = 'Created'
     created.admin_order_field = 'fr_created'
     def tug_land(self,obj):
         try:
-            return obj.fr_tug_land.strftime('%d%m%Y %H%M')
+            return obj.fr_tug_land.strftime('%H%M')
         except:
             return '(None)'
     tug_land.short_description = 'Tug Landing Time'
@@ -316,7 +339,7 @@ class GfsaFlightRecordSheetAdmin(admin.ModelAdmin):
 
     def glider_land(self,obj):
         try:
-            return obj.fr_glider_land.strftime('%d%m%Y %H%M')
+            return obj.fr_glider_land.strftime('%H%M')
         except:
             return '(None)'
     glider_land.short_description = 'Glider Landing Time'
