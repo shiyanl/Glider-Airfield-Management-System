@@ -12,10 +12,10 @@ class GfsaFlightRecords(models.Model):
     tug_tug = models.ForeignKey(GfsaTugs, blank=False, null=True, db_column='Tug_tug_id', verbose_name='Tug Name',help_text='Select Tug') # Field name made lowercase.
     glider_glider = models.ForeignKey(GfsaGliders, blank=False, null=False, db_column='Glider_glider_id',
                                       verbose_name='Glider Rego', default=0,
-                                      help_text='Select Glider')  # Field name made lowercase.
+                                      help_text='Please type Glider Rego and select')  # Field name made lowercase.
 
     fr_p1_id = models.ForeignKey(GFSAXeroContactPerson, blank=False, null=False, db_column='fr_p1_id', on_delete=models.PROTECT,
-                                 verbose_name='Pilot 1 (in command)(required)', related_name='fr_p1_id',help_text='Please type pilot\'s first name and select')
+                                 verbose_name='Pilot 1 (in command)', related_name='fr_p1_id',help_text='Please type pilot\'s first name and select')
     fr_p2_id = models.ForeignKey(GFSAXeroContactPerson, blank=True, null=True, db_column='fr_p2_id', on_delete=models.PROTECT,
                                  verbose_name='Pilot 2', related_name='fr_p2_id',help_text='Please type pilot\'s first name and select')
 

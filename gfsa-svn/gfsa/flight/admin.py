@@ -41,6 +41,7 @@ class TugFlarmTimeInline(admin.TabularInline):
 
 # Create the form class.
 class AddFlightRecordForm(forms.ModelForm):
+    glider_glider = make_ajax_field(GfsaFlightRecords,'glider_glider','glider')
     fr_p1_id = make_ajax_field(GfsaFlightRecords,'fr_p1_id','person')
     fr_p2_id = make_ajax_field(GfsaFlightRecords,'fr_p2_id','person')
     fr_p1_pay_percent = forms.ChoiceField(choices=PAY_PERCENT, required=False, initial='100')
@@ -103,6 +104,7 @@ class GfsaFlightRecordsAdmin(admin.ModelAdmin):
         super(GfsaFlightRecordsAdmin, self).save_model(request, obj, form, change)
 
 class TakeOffForm(forms.ModelForm):
+    #tug_tug = make_ajax_field(GfsaFlightRecords,'tug_tug','tug')
     pass
 
     def clean(self):
@@ -261,9 +263,25 @@ class GfsaFlightRecordsGliderLandingAdmin(admin.ModelAdmin):
         messages.info(request, msg)
 
 
+# Create the form class.
+class ManualAddFlightRecordForm(forms.ModelForm):
+    glider_glider = make_ajax_field(GfsaFlightRecords,'glider_glider','glider')
+    tug_tug = make_ajax_field(GfsaFlightRecords,'tug_tug','tug')
+    fr_p1_id = make_ajax_field(GfsaFlightRecords,'fr_p1_id','person')
+    fr_p2_id = make_ajax_field(GfsaFlightRecords,'fr_p2_id','person')
+    fr_p1_pay_percent = forms.ChoiceField(choices=PAY_PERCENT, required=False, initial='100')
+    fr_p2_pay_percent = forms.ChoiceField(choices=PAY_PERCENT, required=False, initial='0')
+
+
+    class Meta:
+        model = GfsaFlightRecords
+        fields = ['glider_glider', 'fr_p1_id', 'fr_p2_id', 'fr_p1_pay_percent', 'fr_p2_pay_percent'
+        , 'fr_take_off', 'fr_tug_land', 'fr_glider_land', 'fr_comment']
+
+
 
 class GfsaFlightRecordSheetAdmin(admin.ModelAdmin):
-    #form = AddFlightRecordForm
+    form = ManualAddFlightRecordForm
     change_list_template = 'admin/flight/change_list_flightsheet.html'
     search_fields = ['fr_p1_id__last_name','fr_p1_id__first_name','fr_p2_id__last_name','fr_p2_id__first_name','glider_glider__glider_identifier','tug_tug__tug_identifier','fr_comment']
     list_display = ['fr_id', 'created',  'fr_p1_id', 'fr_p2_id', 'fr_p1_pay_percent',

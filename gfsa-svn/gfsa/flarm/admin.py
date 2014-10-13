@@ -1,3 +1,5 @@
+#this part belongs to Zi Li
+#if any problem pls contact
 from django.contrib import admin
 from flarm.models import *
 from glider.models import *
@@ -11,6 +13,7 @@ class GfsaFlarmAdmin(admin.ModelAdmin):
     list_per_page = 50
     def has_add_permission(self,request):
         return False
+    #create the landing collum
     def landing(self,obj):
         flarm = GfsaFlarmRecords.objects.get(pk=obj.pk)
         if flarm.landing_time is None:
@@ -18,6 +21,7 @@ class GfsaFlarmAdmin(admin.ModelAdmin):
         return u'%s' % flarm.landing_time.time()
     landing.short_description = 'Landing time'
     landing.admin_order_field = 'landing_time'
+    #create the takeoff collum
     def takeoff(self,obj):
         flarm = GfsaFlarmRecords.objects.get(pk=obj.pk)
         if flarm.takeoff_time is None:
@@ -25,6 +29,8 @@ class GfsaFlarmAdmin(admin.ModelAdmin):
         return u'%s' % flarm.takeoff_time.time()
     takeoff.short_description = 'takeoff time'
     takeoff.admin_order_field = 'takeoff_time'
+    #as required from the client 
+    #this data is for notification
     def date(self,obj):
         flarm = GfsaFlarmRecords.objects.get(pk=obj.pk)
         try:
@@ -32,7 +38,7 @@ class GfsaFlarmAdmin(admin.ModelAdmin):
         except:
             return u'%s' % flarm.landing_time.date()
     date.admin_order_field = 'takeoff_time'
-
+    #define the name of plane
     def name_of_plane(self,obj):
         flarm = GfsaFlarmRecords.objects.get(pk=obj.pk)
         try:
@@ -44,9 +50,6 @@ class GfsaFlarmAdmin(admin.ModelAdmin):
                 return "Tug : "+tug.tug_identifier
             except:
                 return 'N/A'
-        # except:
-        #     return 'not in sys'
-
 
 
 

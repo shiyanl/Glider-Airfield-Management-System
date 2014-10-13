@@ -54,10 +54,10 @@ INSTALLED_APPS = (
 )
 
 AJAX_LOOKUP_CHANNELS = {
-    #  simple: search Person.objects.filter(name__icontains=q)
     'person'  : {'model': 'xero.GFSAXeroContactPerson', 'search_field': 'first_name'},
-    # define a custom lookup channel
-    'song'   : ('example.lookups', 'SongLookup')
+
+    'glider' : {'model': 'glider.GfsaGliders', 'search_field': 'glider_identifier'},
+    'tug' : {'model': 'tug.GfsaTugs', 'search_field': 'tug_identifier'},
 }
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -94,7 +94,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',  # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': 'gfsa',  # Or path to database file if using sqlite3.
         'USER': 'root',  # Not used with sqlite3.
-        'PASSWORD': 'gfsa123456',  # Not used with sqlite3.
+        'PASSWORD': '',  # Not used with sqlite3.
         'HOST': '',
         # '192.168.1.5',                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '3306',  #'3306',                      # Set to empty string for default. Not used with sqlite3.

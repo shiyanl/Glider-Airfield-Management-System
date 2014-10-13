@@ -116,7 +116,7 @@ def flarm_api(request):
     return response
 
 def save_flarm_(time):
-  #get landing data and takeoff data seperately
+    #get landing data and takeoff data seperately
     list_of_landing = get_data(time,"landing")
     list_of_takeoff = get_data(time,"takeoff")
     list_of_all=list_of_landing+list_of_takeoff
@@ -173,6 +173,9 @@ def save_flarm_(time):
                 #print "count ld = 1 and save with no take off"
       flarm_record.save()
 
+#this function will run after get the flarm data
+#this function can match the flarm data to flight sheet record
+#match will use the cloest time method
 def match_flarm():
   flight_sheet_all=GfsaFlightRecords.objects.all()
   flarm_record_all=GfsaFlarmRecords.objects.all()
@@ -182,10 +185,11 @@ def match_flarm():
     fr_id=flight_sheet_record.fr_id
     glider= flight_sheet_record.glider_glider
     tug=flight_sheet_record.tug_tug
+    #if glider is none then pass
+    #no matter the flarm device exist or not
+    #if not return none
     if glider != None:
         glider_flarm_id=flight_sheet_record.glider_glider.glider_flarm_id
-        #print 'try to find record with id = ',fr_id
-        #print 'glider id = ',glider_flarm_id==None
         if len(glider_flarm_id)!=6:
           continue
         try:  
@@ -197,15 +201,13 @@ def match_flarm():
           GfsaGliderFlarmFlightRecord.save()
         GfsaGliderFlarmFlightRecord.take_off,GfsaGliderFlarmFlightRecord.landing= get_closest_flarm(flight_sheet_record,glider_flarm_id)
         GfsaGliderFlarmFlightRecord.save()
-    #add tug
+    #add tug same as glider table
     if tug != None:
         tug_flarm_id=flight_sheet_record.tug_tug.tug_flarm_id
         if tug_flarm_id=='':
           continue
         if len(tug_flarm_id)!=6:
           continue
-        #print 'tug flarm id =',tug_flarm_id
-
         try:  
           GfsaTugFlarmFlightRecord=GfsaTugFlarmFlightRecords.objects.get(flight_record_id=flight_sheet_record)
         except:
@@ -216,33 +218,29 @@ def match_flarm():
         GfsaTugFlarmFlightRecord.take_off,GfsaTugFlarmFlightRecord.landing= get_closest_flarm(flight_sheet_record,tug_flarm_id)
         GfsaTugFlarmFlightRecord.save()
 
+#this function return the closest time flight sheet record
+#use date package
 def get_closest_flarm(flight_sheet_record,flarm_id):
     flarm_records=GfsaFlarmRecords.objects.filter(flmr_id=flarm_id)
     if len(flarm_records) == 0:
       return None,None
-    #do closest time calculation:
     flarm_records=same_date(flarm_records,flight_sheet_record.fr_take_off)
     closest_record=None
-
-
     if len(flarm_records)==0:
       return None,None
     closest_record = flarm_records[0]
     gap = get_gap(closest_record.takeoff_time,flight_sheet_record.fr_take_off)
     closest_time=gap
     count=1
-    #print 'closest_time ',count,closest_time
+    #do closest time calculation:
     for flarm_record in flarm_records:
       if flarm_record.takeoff_time == None:
         continue
-      #print flarm_record.takeoff_time,flight_sheet_record.fr_take_off,closest_record.takeoff_time
       gap=get_gap(flarm_record.takeoff_time,flight_sheet_record.fr_take_off)
-      #print flarm_record.takeoff_time,'gap is',gap
       if gap<closest_time:
         closest_time=gap
         closest_record = flarm_record
       count+=1
-    #print flight_sheet_record.fr_take_off,closest_record.takeoff_time
     if closest_record==None:
       return None,None
     return closest_record.takeoff_time,closest_record.landing_time
@@ -252,14 +250,11 @@ def get_gap(d1,d2):
         return (d1-d2).seconds
       else:
         return (d2-d1).seconds
-
     except:
       return 100000000000000000000000#as a large gap
-
 def same_date(records,date):
   answer=[]
   for record in records:
-    #print record.takeoff_time.date(),date
     try:
       if record.takeoff_time==None:
         continue
