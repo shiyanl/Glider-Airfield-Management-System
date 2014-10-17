@@ -12,7 +12,7 @@ def email_admin(message):
         message
     ])
     try:
-        server = smtplib.SMTP('smtp.gmail.com:587')
+        server = smtplib.SMTP(EMAIL_SERVER)
         server.ehlo()
         server.starttls()
         server.login(EMAIL_USERNAME,EMAIL_PASSWORD)
@@ -35,7 +35,7 @@ def email_anyone(to_email, message):
         message
     ])
     try:
-        server = smtplib.SMTP('smtp.gmail.com:587')
+        server = smtplib.SMTP(EMAIL_SERVER)
         server.ehlo()
         server.starttls()
         server.login(EMAIL_USERNAME,EMAIL_PASSWORD)

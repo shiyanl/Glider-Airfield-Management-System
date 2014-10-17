@@ -13,7 +13,7 @@ from django.contrib import messages
 from clubs.models import *
 from xero_config import *
 
-
+#Use the keys to access XERO account
 def access_to_xero(request):
     try:
         consumer_key = CONSUMER_KEY
@@ -27,7 +27,7 @@ def access_to_xero(request):
         return HttpResponse('<h1>Failed to access to xero</h1>')
     return xero
 
-
+#download contact list from XERO 
 def get_contacts(request):
     xero = access_to_xero(request)
     try:
@@ -109,7 +109,7 @@ def get_contacts(request):
         return HttpResponse('<h1>Empty contact list</h1>')
     return redirect('/admin/xero/gfsaxerocontactperson')
 
-
+#Download item code from XERO
 def get_item_code(request):
     xero = access_to_xero(request)
     try:
@@ -153,7 +153,7 @@ def get_item_code(request):
         return HttpResponse('<h1>Empty item code list</h1>')
     return redirect('/admin/xero/gfsaxeroitemcode')
 
-
+#Convert XERO contacts into dict format
 def get_contacts_dict(contacts):
     xero_dict = {}
     if type(contacts) == list:
@@ -163,6 +163,7 @@ def get_contacts_dict(contacts):
         xero_dict[contacts['Name']] = contacts
     return xero_dict
 
+#compare contacts and send email to admin email address about member differences
 def compare_contact(request):
     members_difference = ""
     xero = access_to_xero(request)
@@ -220,7 +221,7 @@ def compare_contact(request):
         email_admin(members_difference)
     return redirect('/admin')
 
-
+#Get item information
 def get_item_line(itemcode, quantity, discountRate, description):
     item_line = {}
 
@@ -231,13 +232,13 @@ def get_item_line(itemcode, quantity, discountRate, description):
 
     return item_line
 
-
+#Get contact name
 def get_contact_name(name):
     contact = {}
     contact['Name'] = name
     return contact
 
-
+#Get XERO invoice
 def get_invoice(inv_type, contact, line_items):
     invoice = {}
 
@@ -248,7 +249,7 @@ def get_invoice(inv_type, contact, line_items):
 
     return invoice
 
-
+#upoad XERO invoice
 def upload(request, invoice):
     xero = access_to_xero(request)
 
@@ -260,6 +261,7 @@ def upload(request, invoice):
 
     return True
 
+#get mobile number from xero phones format
 def get_mobile_no(phones):
 
     mobile_no = ''
@@ -288,6 +290,7 @@ def get_mobile_no(phones):
     else:
         return ''
 
+#send flight record information to pilots
 def send_notification(request):
 
     flight_records_set = GfsaFlightRecords.objects.filter(fr_sent = False, fr_tug_duration__isnull = False, fr_glider_duration__isnull = False)
@@ -301,17 +304,22 @@ def send_notification(request):
             send_email_p1 = False
             send_email_p2 = False
             
-            tug_duration = int(flight_record.fr_tug_duration)/60.0
-            glider_duration = int(flight_record.fr_glider_duration)/60.0
-            p1 = str(flight_record.fr_p1_id)
-            p2 = str(flight_record.fr_p2_id)
-            p1_pay_percent = int(flight_record.fr_p1_pay_percent)
-            p2_pay_percent = int(flight_record.fr_p2_pay_percent)
+            tug_duration = int(flight_record.fr_tug_duration)/60
+            glider_duration = int(flight_record.fr_glider_duration)/60
+            p1 = flight_record.fr_p1_id
+            p2 = flight_record.fr_p2_id
+            p1_pay_percent = flight_record.fr_p1_pay_percent
+            p2_pay_percent = flight_record.fr_p2_pay_percent
 
-            notification = p1 + ' pays ' + str(p1_pay_percent) + '% ' + p2 + ' pays ' + str(p2_pay_percent) + '% ' + \
-                ' Tug Duration: ' + str(tug_duration) + ' Glider Duration: ' +\
-                str(glider_duration) + ' Comment: ' + str(flight_record.fr_comment)
-
+            if p2 is None:
+                notification = str(p1) + ' pays ' + str(p1_pay_percent) + '% ' + \
+                    ' Tug Duration: ' + str(tug_duration) + ' Glider Duration: ' +\
+                        str(glider_duration) + ' Comment: ' + str(flight_record.fr_comment)
+                    
+            else:
+                notification = str(p1) + ' pays ' + str(p1_pay_percent) + '% ' + str(p2) + ' pays ' + str(p2_pay_percent) + '% ' + \
+                    ' Tug Duration: ' + str(tug_duration) + ' Glider Duration: ' +\
+                        str(glider_duration) + ' Comment: ' + str(flight_record.fr_comment)      
             try:
                 member_p1 = GFSAXeroContactPerson.objects.get(contact_name=p1)
                 send_email_p1 = True
@@ -335,22 +343,20 @@ def send_notification(request):
                 pass
 
             if send_email_p1:
-            
+                print notification
                 if email_anyone(member_p1.email_address, notification):
                     flight_record.fr_sent = True
 
             if send_email_p2:
-
+                print notification
                 if email_anyone(member_p2.email_address, notification):
                     flight_record.fr_sent = True
 
             if send_sms_p1:
-                print "PPPPPPPPPPPP1111"
                 if send_SMS(p1_mobile, notification):
                     flight_record.fr_sent = True
 
             if send_sms_p2:
-                print "PPPPPPPPPPPP22222222"
                 if send_SMS(p2_mobile, notification):
                     flight_record.fr_sent = True
 

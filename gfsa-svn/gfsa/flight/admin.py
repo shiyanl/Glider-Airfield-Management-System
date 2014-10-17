@@ -17,7 +17,6 @@ class TugFlarmTimeAdmin(admin.ModelAdmin):
     list_display = ['flarm_id', 'flight_record_id', 'take_off', 'landing']
 
 
-
 class GliderFlarmTimeInline(admin.TabularInline):
     model = GfsaGliderFlarmFlightRecords
     can_delete = False
@@ -25,7 +24,6 @@ class GliderFlarmTimeInline(admin.TabularInline):
     readonly_fields = ('take_off', 'landing',)
     extra = 0
     class Meta:
-        #css = {'all': ('css/no-addanother-button.css',)}
         verbose_name_plural = 'Glider Times from Flarm'
 
 
@@ -36,7 +34,6 @@ class TugFlarmTimeInline(admin.TabularInline):
     readonly_fields = ('take_off', 'landing',)
     extra = 0
     class Meta:
-        #css = {'all': ('css/no-addanother-button.css',)}
         verbose_name_plural = 'Tug Times from Flarm'
 
 # Create the form class.
@@ -347,6 +344,11 @@ class GfsaFlightRecordSheetAdmin(admin.ModelAdmin):
 
     def save_model(self, request, obj, form, change):
         if obj:
+            total_glider_duration = (obj.fr_glider_land - obj.fr_take_off).seconds 
+            obj.fr_glider_duration = total_glider_duration if total_glider_duration > 0 else None
+
+            total_tug_duration = (obj.fr_tug_land - obj.fr_take_off).seconds
+            obj.fr_tug_duration = total_tug_duration if total_tug_duration > 0 else None
             obj.save()
         else:
             try:
@@ -364,16 +366,11 @@ class GfsaFlightRecordSheetAdmin(admin.ModelAdmin):
                 tug_flarm.flarm_id = obj.tug_tug.tug_flarm_id
                 tug_flarm.save()
 
-            if obj.fr_glider_land == None or obj.fr_take_off == None or obj.fr_tug_land == None:
-                obj.fr_glider_duration = None  
-                obj.fr_tug_duration = None
-            
-            else:
-                total_glider_duration = (obj.fr_glider_land - obj.fr_take_off).seconds 
-                obj.fr_glider_duration = total_glider_duration if total_glider_duration > 0 else None
+            total_glider_duration = (obj.fr_glider_land - obj.fr_take_off).seconds 
+            obj.fr_glider_duration = total_glider_duration if total_glider_duration > 0 else None
 
-                total_tug_duration = (obj.fr_tug_land - obj.fr_take_off).seconds
-                obj.fr_tug_duration = total_tug_duration if total_tug_duration > 0 else None
+            total_tug_duration = (obj.fr_tug_land - obj.fr_take_off).seconds
+            obj.fr_tug_duration = total_tug_duration if total_tug_duration > 0 else None
 
             obj.save()
 
@@ -408,13 +405,14 @@ class GfsaFlightRecordSheetAdmin(admin.ModelAdmin):
     actions = ['send_flight_notification', 'upload_to_xero']
 
     def send_flight_notification(self, request, queryset):
+        notification_dict = {}
         for flight_record in queryset:
             tug_duration = flight_record.fr_tug_duration
             glider_duration = flight_record.fr_glider_duration
-            p1 = str(flight_record.fr_p1_id)
-            p2 = str(flight_record.fr_p2_id)
-            p1_pay_percent = int(flight_record.fr_p1_pay_percent)
-            p2_pay_percent = int(flight_record.fr_p2_pay_percent)
+            p1 = flight_record.fr_p1_id
+            p2 = flight_record.fr_p2_id
+            p1_pay_percent = flight_record.fr_p1_pay_percent
+            p2_pay_percent = flight_record.fr_p2_pay_percent
 
             send_sms_p1 = False
             send_sms_p2 = False
@@ -425,52 +423,67 @@ class GfsaFlightRecordSheetAdmin(admin.ModelAdmin):
                 msg = u'Cannot send! Flight Record %s is not completed.' % (flight_record.fr_id)
                 messages.info(request, msg)
 
-            elif flight_record.fr_sent == True:
-                msg = u'Send failed! Flight Record %s is already sent.' % (flight_record.fr_id)
-                messages.info(request, msg)
-
-            elif flight_record.fr_sent == False:
+            else:
                 send_p1 = True
                 send_p2 = True
-                tug_duration = int(flight_record.fr_tug_duration)/60.0
+                tug_duration = int(flight_record.fr_tug_duration)/60
                 glider_duration = int(flight_record.fr_glider_duration)/60
-                notification = p1 + ' pays ' + str(p1_pay_percent) + '% ' + p2 + ' pays ' + str(p2_pay_percent) + '% ' + \
-                ' Tug Duration: ' + str(tug_duration) + ' Glider Duration: ' +\
-                str(glider_duration) + ' Comment: ' + str(flight_record.fr_comment)
+                if p2 is None:
+                    notification = str(p1) + ' pays ' + str(p1_pay_percent) + '% ' + \
+                        ' Tug Duration: ' + str(tug_duration) + ' Glider Duration: ' +\
+                            str(glider_duration) + ' Comment: ' + str(flight_record.fr_comment)
+                    
+                else:
+                    notification = str(p1) + ' pays ' + str(p1_pay_percent) + '% ' + str(p2) + ' pays ' + str(p2_pay_percent) + '% ' + \
+                        ' Tug Duration: ' + str(tug_duration) + ' Glider Duration: ' +\
+                            str(glider_duration) + ' Comment: ' + str(flight_record.fr_comment)                    
+
                 try:
                     member_p1 = GFSAXeroContactPerson.objects.get(contact_name=p1)
+                    p1_email = member_p1.email_address
                     p1_mobile = member_p1.phone
                     if p1_mobile is not None:
                         send_sms_p1 = True
-                    if not member_p1.in_xero:
+                    if p1_email is None:
                         send_p1 = False
                 except:
                     send_p1 = False
                 try:
                     member_p2 = GFSAXeroContactPerson.objects.get(contact_name=p2)
+                    p2_email = member_p2.email_address
                     p2_mobile = member_p2.phone
                     if p2_mobile is not None:
-                        send_sms_p2 = True
-                    if not member_p2.in_xero:
+                        send_sms_p2 = True   
+                    if p2_email is None:
                         send_p2 = False
                 except:
                     send_p2 = False
-                if send_p1 == True:
-                    if email_anyone(member_p1.email_address, notification):
-                        queryset.update(fr_sent=True)
 
-                if send_p2 == True:
-                    if email_anyone(member_p2.email_address, notification):
-                        queryset.update(fr_sent=True)
+                if send_p1:
+                    if p1_email in notification_dict.keys():
+                        notification_dict[p1_email] += ("\n" + notification)
+                    else:
+                        notification_dict[p1_email] = notification
+                    print notification + '1' + member_p1.email_address
+                    #email_anyone(member_p1.email_address, notification)
+
+                if send_p2:
+                    if p2_email in notification_dict.keys():
+                        notification_dict[p2_email] += ("\n" + notification)
+                    else:
+                        notification_dict[p2_email] = notification
+                    print notification + '2'
+                    #email_anyone(member_p2.email_address, notification)
 
                 if send_sms_p1:
-
-                    if send_SMS(p1_mobile, notification):
-                        queryset.update(fr_sent=True)
+                    print notification + '3' + p1_mobile
+                    send_SMS(p1_mobile, notification)
 
                 if send_sms_p2:
-                    if send_SMS(p2_mobile, notification):
-                        queryset.update(fr_sent=True)
+                    print notification + '4'
+                    send_SMS(p2_mobile, notification)
+        for email in notification_dict.keys():
+            email_anyone(email, notification_dict[email])
 
     send_flight_notification.short_description = "Notify Members"
 
@@ -497,8 +510,8 @@ class GfsaFlightRecordSheetAdmin(admin.ModelAdmin):
             tug_duration = flight_record.fr_tug_duration
             glider_duration = flight_record.fr_glider_duration
 
-            p1 = str(flight_record.fr_p1_id)
-            p2 = str(flight_record.fr_p2_id)
+            p1 = flight_record.fr_p1_id
+            p2 = flight_record.fr_p2_id
             p1_pay_percent = int(flight_record.fr_p1_pay_percent)
             p2_pay_percent = int(flight_record.fr_p2_pay_percent)
             
@@ -513,8 +526,8 @@ class GfsaFlightRecordSheetAdmin(admin.ModelAdmin):
 
             elif flight_record.fr_in_xero == False:
 
-                tug_duration = int(tug_duration)/60.0
-                glider_duration = int(glider_duration)/60.0
+                tug_duration = int(tug_duration)/60
+                glider_duration = int(glider_duration)/60
 
                 if tug_duration > MAX_DURATION:
                     tug_duration = MAX_DURATION
@@ -522,12 +535,6 @@ class GfsaFlightRecordSheetAdmin(admin.ModelAdmin):
                     glider_duration = MAX_DURATION
 
                 if p1_pay_percent == 50 and p2_pay_percent == 50:
-
-                    description += p1 + ' ' + str(p1_pay_percent) + ' ' + p2 + ' ' + str(p2_pay_percent) + ' ' + \
-                                   str(flight_record.glider_glider) + ' ' + str(flight_record.tug_tug) + ' ' + \
-                                   str(flight_record.fr_take_off) + ' ' + str(flight_record.fr_tug_land) + ' ' + \
-                                   str(tug_duration) + ' ' + str(flight_record.fr_glider_land) + ' ' + \
-                                   str(glider_duration) + ' ' + str(flight_record.fr_comment) + '\n'
 
                     tug_flag_mutual = tug_flag_mutual_prefix + str(flight_record.tug_tug)
                     tug_mutual = tug_mutual_prefix + str(flight_record.tug_tug)
@@ -600,11 +607,19 @@ class GfsaFlightRecordSheetAdmin(admin.ModelAdmin):
 
                     if not flag:
 
-                        tug_flag_mutual_item = get_item_line(tug_flag_mutual, 1, discountRate, description)
-                        tug_mutual_item = get_item_line(tug_mutual, tug_duration, discountRate, description)
+                        description += str(p1) + ' pays ' + str(p1_pay_percent) + '% ' + str(p2) + ' pays ' + str(p2_pay_percent) + '% ' + \
+                            ' Tug Duration: ' + str(tug_duration) + ' Glider Duration: ' +\
+                                str(glider_duration) + ' Comment: ' + str(flight_record.fr_comment) + '\n'
+
+                        current_des = str(p1) + ' pays ' + str(p1_pay_percent) + '% ' + str(p2) + ' pays ' + str(p2_pay_percent) + '% ' + \
+                            ' Tug Duration: ' + str(tug_duration) + ' Glider Duration: ' +\
+                                str(glider_duration) + ' Comment: ' + str(flight_record.fr_comment) + '\n'
+
+                        tug_flag_mutual_item = get_item_line(tug_flag_mutual, 1, discountRate, current_des)
+                        tug_mutual_item = get_item_line(tug_mutual, tug_duration, discountRate, current_des)
                         glider_flag_mutual_item = get_item_line(glider_flag_mutual, 1, discountRate,
-                                                                description)
-                        glider_mutual_item = get_item_line(glider_mutual, glider_duration, discountRate, description)
+                                                                current_des)
+                        glider_mutual_item = get_item_line(glider_mutual, glider_duration, discountRate, current_des)
                         line_items = [tug_flag_mutual_item, tug_mutual_item, glider_flag_mutual_item,
                                       glider_mutual_item]
                         contact_p1 = get_contact_name(p1)
@@ -630,12 +645,6 @@ class GfsaFlightRecordSheetAdmin(admin.ModelAdmin):
 
 
                 elif p1_pay_percent == 100 or p2_pay_percent == 100:
-
-                    description += p1 + ' ' + str(p1_pay_percent) + ' ' + p2 + ' ' + str(p2_pay_percent) + ' ' + \
-                                   str(flight_record.glider_glider) + ' ' + str(flight_record.tug_tug) + ' ' + \
-                                   str(flight_record.fr_take_off) + ' ' + str(flight_record.fr_tug_land) + ' ' + \
-                                   str(tug_duration) + ' ' + str(flight_record.fr_glider_land) + ' ' + \
-                                   str(glider_duration) + ' ' + str(flight_record.fr_comment) + '\n'
 
                     tug_flag_solo = tug_flag_solo_prefix + str(flight_record.tug_tug)
                     tug_solo = tug_solo_prefix + str(flight_record.tug_tug)
@@ -677,17 +686,26 @@ class GfsaFlightRecordSheetAdmin(admin.ModelAdmin):
                         flag = True
 
                     if not flag:
+
+                        description += str(p1) + ' pays ' + str(p1_pay_percent) + '% ' + str(p2) + ' pays ' + str(p2_pay_percent) + '% ' + \
+                            ' Tug Duration: ' + str(tug_duration) + ' Glider Duration: ' +\
+                                str(glider_duration) + ' Comment: ' + str(flight_record.fr_comment) + '\n'
+
+                        current_des = str(p1) + ' pays ' + str(p1_pay_percent) + '% ' + str(p2) + ' pays ' + str(p2_pay_percent) + '% ' + \
+                            ' Tug Duration: ' + str(tug_duration) + ' Glider Duration: ' +\
+                                str(glider_duration) + ' Comment: ' + str(flight_record.fr_comment) + '\n'        
+
                         if p1_pay_percent == 100:
 
                             try:
                                 member_p1 = GFSAXeroContactPerson.objects.get(contact_name=p1)
                                 tug_flag_solo_item = get_item_line(tug_flag_solo, 1, discountRate,
-                                                                   description)
-                                tug_solo_item = get_item_line(tug_solo, tug_duration, discountRate, description)
+                                                                   current_des)
+                                tug_solo_item = get_item_line(tug_solo, tug_duration, discountRate, current_des)
                                 glider_flag_solo_item = get_item_line(glider_flag_solo, 1, discountRate,
-                                                                      description)
+                                                                      current_des)
                                 glider_solo_item = get_item_line(glider_solo, glider_duration, discountRate,
-                                                                 description)
+                                                                 current_des)
                                 line_items = [tug_flag_solo_item, tug_solo_item, glider_flag_solo_item,
                                               glider_solo_item]
                                 contact_p1 = get_contact_name(p1)
@@ -739,6 +757,7 @@ class GfsaFlightRecordSheetAdmin(admin.ModelAdmin):
                                 print "No this member in database!"
 
         if len(description) > 0:
+            print description
             email_admin(description)                
 
 

@@ -5,7 +5,7 @@ from tug.models import GfsaTugs
 from gfsa.settings import *
 from xero.models import GFSAXeroContactPerson, GFSAXeroItemCode
 from datetime import datetime
-
+from django.contrib import messages
 
 class GfsaFlightRecords(models.Model):
     fr_id = models.AutoField(primary_key=True)
@@ -83,16 +83,21 @@ class GfsaGliderFlarmFlightRecords(models.Model):
         return ''
 
     def save(self):
-        #print "---------------------------------"
         flight = GfsaFlightRecords.objects.get(pk=self.flight_record_id.pk)
         if self.use_take_off:
-            flight.fr_take_off = self.take_off
+            msg = 'Cannot overide glider time with (None) time'
+            self.use_take_off=False
+            print msg
+            if self.take_off != None:
+                flight.fr_take_off = self.take_off
             flight.save()
+
         if self.use_landing:
-            flight.fr_glider_land = self.landing
+            self.use_landing=False
+            if self.take_off != None:
+                flight.fr_glider_land = self.landing
             flight.save()
         super(GfsaGliderFlarmFlightRecords, self).save()
-
 
 class GfsaTugFlarmFlightRecords(models.Model):
     flight_record_id = models.ForeignKey(GfsaFlightRecords, blank=False, null=True)
@@ -111,9 +116,14 @@ class GfsaTugFlarmFlightRecords(models.Model):
     def save(self):
         flight = GfsaFlightRecords.objects.get(pk=self.flight_record_id.pk)
         if self.use_take_off:
-            flight.fr_take_off = self.take_off
+            self.use_take_off=False
+            if self.take_off != None:
+                flight.fr_take_off = self.take_off
             flight.save()
+
         if self.use_landing:
-            flight.fr_tug_land = self.landing
+            self.use_landing=False
+            if self.take_off != None:
+                flight.fr_glider_land = self.landing
             flight.save()
         super(GfsaTugFlarmFlightRecords,self).save()

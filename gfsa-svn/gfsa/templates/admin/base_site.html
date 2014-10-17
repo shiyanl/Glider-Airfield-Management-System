@@ -5,9 +5,22 @@
 <style type="text/css">
 
 </style>
-<h1 id="site-name" style="margin-top: 0px;"><a href="/admin" style="color:#fff;font-size:20px;">{% trans 'GFSA Administration' %}</a></h1>
+
+<h1 id="site-name" style="margin-top: 0px;">
+	<a href="/admin" style="color:#fff;font-size:25px;">{% trans 'GFSA Home' %}</a>
+<a href="/admin/flight/gfsaflightrecords/add/" style="color:#66CCFF;font-size:15px;">{% trans 'Initial Flight' %}</a>
+<a href="/admin/flight/gfsatakeoff/" style="color:#fff;font-size:15px;">{% trans 'Take Off' %}</a>
+<a href="/admin/flight/gfsatuglanding/" style="color:#66CCFF;font-size:15px;">{% trans 'Tug Land' %}</a>
+<a href="/admin/flight/gfsagliderlanding/" style="color:#fff;font-size:15px;">{% trans 'Glider Land' %}</a>
+<a href="/admin/tug/gfsatugs/add/" style="color:#66CCFF;font-size:15px;">{% trans 'New Tug' %}</a>
+<a href="/admin/glider/gfsagliders/add/" style="color:#fff;font-size:15px;">{% trans 'New Glider' %}</a>
+<a href="/admin/xero/gfsaxerocontactperson/add/" style="color:#66CCFF;font-size:15px;">{% trans 'New Member' %}</a>
+</h1>
+
+
 {% endblock %}
 {% block extrahead %}
+
 
  <meta name=”viewport” content=”width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1″ />
  {% endblock %}
